@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/jmaslak/Perl6-IP-Random.svg?branch=master)](https://travis-ci.org/jmaslak/Perl6-IP-Random)
+
 NAME
 ====
 
