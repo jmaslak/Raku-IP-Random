@@ -8,7 +8,7 @@ use Test;
 
 use IP::Random;
 
-my constant TRIALS = 1024;
+my constant TRIALS = 2048;
 
 my @ips = map { IP::Random::random_ipv4 }, ^TRIALS;
 
@@ -22,7 +22,7 @@ for @ips -> $ip {
 subtest 'randomness', {
     for ^256 -> $oct {
         my $min = ($oct == 0 || $oct == 10 || $oct > 224) ?? 2 !! 4;
-        ok(@octets[$oct] <=   48, "$oct randomness 1 (@octets[$oct])");
+        ok(@octets[$oct] <=   64, "$oct randomness 1 (@octets[$oct])");
         ok(@octets[$oct] >= $min, "$oct randomness 2 (@octets[$oct])");
     }
     done-testing;
