@@ -1,7 +1,7 @@
 use v6.c;
-# unit class IP::Random:ver<0.0.1>;
+# unit class IP::Random:ver<0.0.2>;
 
-module IP::Random:ver<0.0.1>:auth<cpan:JMASLAK> {
+module IP::Random:ver<0.0.2>:auth<cpan:JMASLAK> {
 
     our constant named_exclude = {
         '0.0.0.0/8'             => ( 'default', 'rfc1122', ),
@@ -34,13 +34,13 @@ module IP::Random:ver<0.0.1>:auth<cpan:JMASLAK> {
         my %excluded;
         for @exclude -> $ex {
             for named_exclude -> $potential {
-                if ($potential.value.grep($ex)) {
+                if $potential.value.grep($ex) {
                     %excluded{ $potential.key } = $potential.value;
                 }
             }
         }
 
-        loop (;;) {
+        loop {
             my $addr = join('.', map({ (^256).pick }, ^4));
 
             my @cidrs = ipv4-containing-cidrs($addr);
@@ -103,7 +103,7 @@ IP::Random - Generate random IP Addresses
 
   use IP::Random;
 
-  my $ipv4 = IP::Random::random_ipv4();
+  my $ipv4 = IP::Random::random_ipv4;
 
 =head1 DESCRIPTION
 
@@ -116,7 +116,7 @@ this behavior can be adjusted.
 
 =head1 FUNCTIONS
 
-=head2 default_ipv4_exclude()
+=head2 default_ipv4_exclude
 
 Returns the default exclude list for IPv4, as a list of CIDR strings.
 
@@ -131,7 +131,7 @@ that match that type.  See L<named_exclude> for the valid types.
 
 =head2 random_ipv4( :$exclude )
 
-    say random_ipv4();
+    say random_ipv4;
     say random_ipv4( exclude => ('rfc1112', 'rfc1122') );
 
 This returns a random IPv4 address.  If called with no parameters, it will

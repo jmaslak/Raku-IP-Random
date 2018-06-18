@@ -10,7 +10,7 @@ use IP::Random;
 
 my constant TRIALS = 1024;
 
-my @ips = map { IP::Random::random_ipv4() }, ^TRIALS;
+my @ips = map { IP::Random::random_ipv4 }, ^TRIALS;
 
 my @octets = map { 0 }, ^256;
 for @ips -> $ip {
