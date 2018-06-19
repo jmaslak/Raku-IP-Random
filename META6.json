@@ -14,7 +14,7 @@
   },
   "resources" : [ ],
   "source-url" : "https://github.com/jmaslak/Perl6-IP-Random.git",
-  "tags" : [ ],
+  "tags" : [ "CPAN5" ],
   "test-depends" : [ ],
   "version" : "0.0.1"
 }
