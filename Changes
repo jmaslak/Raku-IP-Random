@@ -1,6 +1,8 @@
 Revision history for IP-Random
 
 {{$NEXT}}
+
+0.0.2  2018-06-19T10:15:10-06:00
     - Follow Perl6 idioms better
     - Tests were sometimes failing, adjust.
 
