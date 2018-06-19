@@ -10,7 +10,7 @@ SYNOPSIS
 
     use IP::Random;
 
-    my $ipv4 = IP::Random::random_ipv4();
+    my $ipv4 = IP::Random::random_ipv4;
 
 DESCRIPTION
 ===========
@@ -22,8 +22,8 @@ By default, the IP returned is a valid, publicly routable IP address, but this b
 FUNCTIONS
 =========
 
-default_ipv4_exclude()
-----------------------
+default_ipv4_exclude
+--------------------
 
 Returns the default exclude list for IPv4, as a list of CIDR strings.
 
@@ -37,7 +37,7 @@ When passed a `$type`, such as `'rfc1918'`, will return a list of CIDRs that mat
 random_ipv4( :$exclude )
 ------------------------
 
-    say random_ipv4();
+    say random_ipv4;
     say random_ipv4( exclude => ('rfc1112', 'rfc1122') );
 
 This returns a random IPv4 address. If called with no parameters, it will exclude any addresses in the default exclude list.
