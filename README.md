@@ -56,80 +56,85 @@ A hash of all the named IP exludes that this `IP::Random` is aware of. The key i
 
 This list contains:
 
-  * 0.0.0.0/8
+  * `0.0.0.0/8`
 
-Tags: default, rfc1122
+    Tags: default, rfc1122
 
-"This" Network (RFC1122, Section 3.2.1.3).
+    "This" Network (RFC1122, Section 3.2.1.3).
 
-  * 10.0.0.0/8
+  * `10.0.0.0/8`
 
-Tags: default, rfc1918
+    Tags: default, rfc1918
 
-Private-Use Networks (RFC1918).
+    Private-Use Networks (RFC1918).
 
-  * 100.64.0.0/10
+  * `100.64.0.0/10`
 
-Shared Address Space (RFC6598)
+    Shared Address Space (RFC6598)
 
-  * 127.0.0.0/8
+  * `127.0.0.0/8`
 
-Tags: default, rfc1122
+    Tags: default, rfc1122
 
-Loopback (RFC1122, Section 3.2.1.3)
+    Loopback (RFC1122, Section 3.2.1.3)
 
-  * 169.254.0.0/16
+  * `169.254.0.0/16`
 
-Link Local (RFC 3927)
+    Link Local (RFC 3927)
 
-  * 172.16.0.0/12
+  * `172.16.0.0/12`
 
-Tags: default, rfc1918
+    Tags: default, rfc1918
 
-Private-Use Networks (RFC1918)
+    Private-Use Networks (RFC1918)
 
-  * 192.0.0.0/24
+  * `192.0.0.0/24`
 
-IETF Protocol Assignments (RFC5736)
+    IETF Protocol Assignments (RFC5736)
 
-  * 192.0.2.0/24
+  * `192.0.2.0/24`
 
-TEST-NET-1 (RFC5737)
+    TEST-NET-1 (RFC5737)
 
-  * 192.88.99.0/24
+  * `192.88.99.0/24`
 
-6-to-4 Anycast (RFC3068)
+    6-to-4 Anycast (RFC3068)
 
-  * 192.168.0.0/16
+  * `192.168.0.0/16`
 
-Tags: default, rfc1918
+    Tags: default, rfc1918
 
-Private-Use Networks (RFC1918)
+    Private-Use Networks (RFC1918)
 
-  * 198.18.0.0/15
+  * `198.18.0.0/15`
 
-Network Interconnect Device Benchmark Testing (RFC2544)
+    Network Interconnect Device Benchmark Testing (RFC2544)
 
-  * 198.51.100.0/24
+  * `198.51.100.0/24`
 
-TEST-NET-2 (RFC5737)
+    TEST-NET-2 (RFC5737)
 
-  * 203.0.113.0/24
+  * `203.0.113.0/24`
 
-TEST-NET-3 (RFC5737)
+    TEST-NET-3 (RFC5737)
 
-  * 224.0.0.0/4
+  * `224.0.0.0/4`
 
-Multicast (RFC3171)
+    Multicast (RFC3171)
 
-  * 240.0.0.0/4
+  * `240.0.0.0/4`
 
-Reserved for Future Use (RFC 1112, Section 4)
+    Reserved for Future Use (RFC 1112, Section 4)
 
 AUTHOR
 ======
 
 Joelle Maslak <jmaslak@antelope.net>
+
+CONTRIBUTORS
+============
+
+Elizabeth Mattijsen <liz@wenzperl.nl>
 
 COPYRIGHT AND LICENSE
 =====================
