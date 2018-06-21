@@ -1,7 +1,10 @@
 Revision history for IP-Random
 
 {{$NEXT}}
+
+0.0.3  2018-06-20T20:52:24-06:00
     - Add code of conduct and contributing information
+    - Fix formatting of Readme.md
 
 0.0.2  2018-06-19T10:15:10-06:00
     - Follow Perl6 idioms better

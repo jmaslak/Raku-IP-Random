@@ -56,11 +56,6 @@ A hash of all the named IP exludes that this `IP::Random` is aware of. The key i
 
 This list contains:
 
-over
-====
-
-4
-
   * 0.0.0.0/8
 
 Tags: default, rfc1122
@@ -130,11 +125,6 @@ Multicast (RFC3171)
   * 240.0.0.0/4
 
 Reserved for Future Use (RFC 1112, Section 4)
-
-back
-====
-
-
 
 AUTHOR
 ======
