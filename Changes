@@ -2,6 +2,7 @@ Revision history for IP-Random
 
 {{$NEXT}}
     - Performance improvement in ipv4-to-int() (from ELIZABETH)
+    - Further POD changes to make more Perl6-ish
 
 0.0.3  2018-06-20T20:52:24-06:00
     - Add code of conduct and contributing information

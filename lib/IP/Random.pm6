@@ -153,79 +153,92 @@ with the values of C<( 'rfc1918', 'default' )>.
 
 This list contains:
 
-=over 4
-
-=item 0.0.0.0/8
+=begin item
+C<0.0.0.0/8>
 
 Tags: default, rfc1122
 
 "This" Network (RFC1122, Section 3.2.1.3).
-
-=item 10.0.0.0/8
+=end item
+=begin item
+C<10.0.0.0/8>
 
 Tags: default, rfc1918
 
 Private-Use Networks (RFC1918).
-
-=item 100.64.0.0/10
+=end item
+=begin item
+C<100.64.0.0/10>
 
 Shared Address Space (RFC6598)
 
-=item 127.0.0.0/8
+=end item
+=begin item
+C<127.0.0.0/8>
 
 Tags: default, rfc1122
 
 Loopback (RFC1122, Section 3.2.1.3)
-
-=item 169.254.0.0/16
+=end item
+=begin item
+C<169.254.0.0/16>
 
 Link Local (RFC 3927)
-
-=item 172.16.0.0/12
+=end item
+=begin item
+C<172.16.0.0/12>
 
 Tags: default, rfc1918
 
 Private-Use Networks (RFC1918)
-
-=item 192.0.0.0/24
+=end item
+=begin item
+C<192.0.0.0/24>
 
 IETF Protocol Assignments (RFC5736)
-
-=item 192.0.2.0/24
+=end item
+=begin item
+C<192.0.2.0/24>
 
 TEST-NET-1 (RFC5737)
-
-=item 192.88.99.0/24
+=end item
+=begin item
+C<192.88.99.0/24>
 
 6-to-4 Anycast (RFC3068)
-
-=item 192.168.0.0/16
+=end item
+=begin item
+C<192.168.0.0/16>
 
 Tags: default, rfc1918
 
 Private-Use Networks (RFC1918)
-
-=item 198.18.0.0/15
+=end item
+=begin item
+C<198.18.0.0/15>
 
 Network Interconnect Device Benchmark Testing (RFC2544)
-
-=item 198.51.100.0/24
+=end item
+=begin item
+C<198.51.100.0/24>
 
 TEST-NET-2 (RFC5737)
-
-=item 203.0.113.0/24
+=end item
+=begin item
+C<203.0.113.0/24>
 
 TEST-NET-3 (RFC5737)
-
-=item 224.0.0.0/4
+=end item
+=begin item
+C<224.0.0.0/4>
 
 Multicast (RFC3171)
-
-=item 240.0.0.0/4
+=end item
+=begin item
+C<240.0.0.0/4>
 
 Reserved for Future Use (RFC 1112, Section 4)
-
-=back
+=end item
 
 =head1 AUTHOR
 
