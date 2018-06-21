@@ -51,10 +51,9 @@ module IP::Random:ver<0.0.3>:auth<cpan:JMASLAK> {
     }
 
     my sub ipv4-to-int($ascii) {
-        my $ipval = 0;
-        for $ascii.split('.') -> $part {
-            $ipval *= 256;
-            $ipval += $part;
+        my int $ipval = 0;
+        for $ascii.split('.') -> Int(Str) $part {
+            $ipval = $ipval +< 8 + $part;
         }
 
         return $ipval;
