@@ -231,6 +231,10 @@ Reserved for Future Use (RFC 1112, Section 4)
 
 Joelle Maslak <jmaslak@antelope.net>
 
+=head1 CONTRIBUTORS
+
+Elizabeth Mattijsen <liz@wenzperl.nl>
+
 =head1 COPYRIGHT AND LICENSE
 
 Copyright (C) 2018 Joelle Maslak
