@@ -59,20 +59,16 @@ module IP::Random:ver<0.0.4>:auth<cpan:JMASLAK> {
         return $ipval;
     }
 
-    my sub int-to-ipv4($i) {
-        my $ipval = $i;
+    my sub int-to-ipv4(Int:D $IP) {
+        my int $ip = $IP;
 
-        my $output = '';
-        for ^4 {
-            if ($output ne '') {
-                $output = ($ipval % 256) ~ '.' ~ $output;
-            } else {
-                $output = $ipval % 256;
-            }
-            $ipval = truncate($ipval / 256);
-        }
+        my @output;
+        @output.push($ip +> 24       );
+        @output.push($ip +> 16 +& 255);
+        @output.push($ip +>  8 +& 255);
+        @output.push($ip       +& 255);
 
-        return $output;
+        return @output.join('.')
     }
 
     my sub ipv4-containing-cidrs($ascii_ipv4) {
