@@ -41,9 +41,10 @@ module IP::Random:ver<0.0.5>:auth<cpan:JMASLAK> {
         }
 
         loop {
-            my $addr = int-to-ipv4 (^(2**32)).pick;
+            my Int:D $IP = (^(2**32)).pick;
+            my $addr = int-to-ipv4($IP);
 
-            my @cidrs = ipv4-containing-cidrs($addr);
+            my @cidrs = int-ipv4-containing-cidrs($IP);
             if @cidrs.grep( { %excluded{$_}:exists } ).elems == 0 {
                 return $addr;
             }
@@ -71,14 +72,12 @@ module IP::Random:ver<0.0.5>:auth<cpan:JMASLAK> {
         return @output.join('.')
     }
 
-    my sub ipv4-containing-cidrs($ascii_ipv4) {
-        my $ipval = ipv4-to-int($ascii_ipv4);
-
-        my @cidrs = $ascii_ipv4 ~ '/32';
+    my sub int-ipv4-containing-cidrs(Int:D $IP) {
+        my @cidrs = ( int-to-ipv4($IP) ~ '/32' );
         for (1..31).reverse -> $len {
-            $ipval = $ipval +& ( ( (2**32)-1) +^ ((2**(32-$len))-1) ) ;
+            my Int $TMPIP = $IP +& ( ( (2**32)-1) +^ ((2**(32-$len))-1) ) ;
 
-            my $cidr = int-to-ipv4($ipval) ~ '/' ~ $len;
+            my $cidr = int-to-ipv4($TMPIP) ~ '/' ~ $len;
             push @cidrs, $cidr;
         }
         push @cidrs, '0.0.0.0/0';
