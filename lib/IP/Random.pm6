@@ -41,7 +41,7 @@ module IP::Random:ver<0.0.5>:auth<cpan:JMASLAK> {
         }
 
         loop {
-            my $addr = join('.', map({ (^256).pick }, ^4));
+            my $addr = int-to-ipv4 (^(2**32)).pick;
 
             my @cidrs = ipv4-containing-cidrs($addr);
             if @cidrs.grep( { %excluded{$_}:exists } ).elems == 0 {
