@@ -1,7 +1,7 @@
 use v6.c;
 # unit class IP::Random:ver<0.0.2>;
 
-module IP::Random:ver<0.0.5>:auth<cpan:JMASLAK> {
+module IP::Random:ver<0.0.6>:auth<cpan:JMASLAK> {
 
     our constant named_exclude = {
         '0.0.0.0/8'             => ( 'default', 'rfc1122', ),
@@ -44,6 +44,18 @@ module IP::Random:ver<0.0.5>:auth<cpan:JMASLAK> {
             }
         }
 
+        if ($count > 128) {
+            my $batch = Int($count/16);
+            my $final = $count - 15*$batch;
+            return flat (^16).race(batch=>1).map(
+                { _random_ipv4_batch(%excluded, $_ ?? $batch !! $final) }
+            );
+        } else {
+            return _random_ipv4_batch(%excluded, $count);
+        }
+    }
+
+    our sub _random_ipv4_batch(%excluded, Int:D $count) {
         my @out;
         my $c = $count;
         loop {
@@ -123,10 +135,12 @@ what IP ranges will be included in this list.
 When passed a C<$type>, such as C<'rfc1918'>, will return a list of CIDRs
 that match that type.  See L<named_exclude> for the valid types.
 
-=head2 random_ipv4( :$exclude )
+=head2 random_ipv4( :@exclude, :$count )
 
     say random_ipv4;
     say random_ipv4( exclude => ('rfc1112', 'rfc1122') );
+    say join( ',',
+        random_ipv4( exclude => ('rfc1112', 'rfc1122'), count => 2048 ) );
 
 This returns a random IPv4 address.  If called with no parameters, it will
 exclude any addresses in the default exclude list.
@@ -134,6 +148,12 @@ exclude any addresses in the default exclude list.
 If called with the exclude optional parameter, which is passed as a list,
 it will use the exclude types (see L<named_exclude> for the types) to
 exclude from generation.
+
+The count optional parameter will cause c<random_ipv4> to return a list of
+random IPv4 addresses (equal to the value of C<count>).  If C<count> is
+greater than 128, this will be done across multiple CPU cores.  Batching in
+this way will yield significantly higher performance than repeated calls to
+the C<random_ipv4()> routine.
 
 =head1 CONSTANTS
 

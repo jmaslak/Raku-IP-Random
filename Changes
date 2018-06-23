@@ -1,6 +1,8 @@
 Revision history for IP-Random
 
 {{$NEXT}}
+
+0.0.6  2018-06-22T22:57:48-06:00
     - Performance improvement in ipv4_random() method
 
 0.0.5  2018-06-22T06:51:06-06:00

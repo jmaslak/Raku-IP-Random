@@ -34,15 +34,19 @@ exclude_ipv4_list($type)
 
 When passed a `$type`, such as `'rfc1918'`, will return a list of CIDRs that match that type. See [named_exclude](named_exclude) for the valid types.
 
-random_ipv4( :$exclude )
-------------------------
+random_ipv4( :@exclude, :$count )
+---------------------------------
 
     say random_ipv4;
     say random_ipv4( exclude => ('rfc1112', 'rfc1122') );
+    say join( ',',
+        random_ipv4( exclude => ('rfc1112', 'rfc1122'), count => 2048 ) );
 
 This returns a random IPv4 address. If called with no parameters, it will exclude any addresses in the default exclude list.
 
 If called with the exclude optional parameter, which is passed as a list, it will use the exclude types (see [named_exclude](named_exclude) for the types) to exclude from generation.
+
+The count optional parameter will cause c<random_ipv4> to return a list of random IPv4 addresses (equal to the value of `count`). If `count` is greater than 128, this will be done across multiple CPU cores. Batching in this way will yield significantly higher performance than repeated calls to the `random_ipv4()` routine.
 
 CONSTANTS
 =========
