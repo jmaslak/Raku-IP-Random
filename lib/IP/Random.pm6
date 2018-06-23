@@ -30,23 +30,36 @@ module IP::Random:ver<0.0.5>:auth<cpan:JMASLAK> {
         map { $_.key }, grep { $_.value.grep($type) }, named_exclude;
     }
 
-    our sub random_ipv4(:@exclude = ('default',) ) {
+    our sub random_ipv4(:@exclude = ('default',), Int:D :$count = 0 ) {
         my %excluded;
         for @exclude -> $ex {
             for named_exclude -> $potential {
                 if $potential.value.grep($ex) {
-                    %excluded{ $potential.key } = $potential.value;
+                    my ($exclude_ip, $exclude_mask) = $potential.key.split('/');
+                    $exclude_mask //= 32;
+
+
+                    %excluded{ $potential.key } = ( Int(ipv4-to-int( $exclude_ip )), $exclude_mask );
                 }
             }
         }
 
+        my @out;
+        my $c = $count;
         loop {
             my Int:D $IP = (^(2**32)).pick;
-            my $addr = int-to-ipv4($IP);
 
-            my @cidrs = int-ipv4-containing-cidrs($IP);
-            if @cidrs.grep( { %excluded{$_}:exists } ).elems == 0 {
-                return $addr;
+            if (! grep { $IP +& ( ((2**32)-1) +^ ( (2**(32-$_[1]))-1 ) ) == $_[0] }, %excluded.values ) {
+                my $addr = int-to-ipv4($IP);
+                if (!$count) {
+                    return $addr;
+                } else {
+                    @out.push($addr);
+                    $c--;
+                    if (!$c) {
+                        return @out;
+                    }
+                }
             }
         }
     }
@@ -70,19 +83,6 @@ module IP::Random:ver<0.0.5>:auth<cpan:JMASLAK> {
         @output.push($ip       +& 255);
 
         return @output.join('.')
-    }
-
-    my sub int-ipv4-containing-cidrs(Int:D $IP) {
-        my @cidrs = ( int-to-ipv4($IP) ~ '/32' );
-        for (1..31).reverse -> $len {
-            my Int $TMPIP = $IP +& ( ( (2**32)-1) +^ ((2**(32-$len))-1) ) ;
-
-            my $cidr = int-to-ipv4($TMPIP) ~ '/' ~ $len;
-            push @cidrs, $cidr;
-        }
-        push @cidrs, '0.0.0.0/0';
-
-        return @cidrs;
     }
 
 };
