@@ -38,8 +38,9 @@ module IP::Random:ver<0.0.6>:auth<cpan:JMASLAK> {
                     my ($exclude_ip, $exclude_mask) = $potential.key.split('/');
                     $exclude_mask //= 32;
 
-
-                    %excluded{ $potential.key } = ( Int(ipv4-to-int( $exclude_ip )), $exclude_mask );
+                    my int $ipv4 = ipv4-to-int( $exclude_ip );
+                    my int $mask = Int($exclude_mask);
+                    %excluded{ $potential.key } = ( $ipv4, $mask );
                 }
             }
         }
@@ -59,7 +60,7 @@ module IP::Random:ver<0.0.6>:auth<cpan:JMASLAK> {
         my @out;
         my $c = $count;
         loop {
-            my Int:D $IP = (^(2**32)).pick;
+            my int $IP = (^(2**32)).pick;
 
             if (! grep { $IP +& ( ((2**32)-1) +^ ( (2**(32-$_[1]))-1 ) ) == $_[0] }, %excluded.values ) {
                 my $addr = int-to-ipv4($IP);
