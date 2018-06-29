@@ -5,4 +5,6 @@ Todo Items:
   * Throw error on invalid exclude tags
   * Better IPv4 validation in random_ipv4
   * Allow form of command that specifies "include" type
+  * Better validation of CIDRs in exclude list (exclude param to
+    random_ipv4()
 
