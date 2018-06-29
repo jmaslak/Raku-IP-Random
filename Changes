@@ -1,6 +1,8 @@
 Revision history for IP-Random
 
 {{$NEXT}}
+
+0.0.7  2018-06-28T21:32:00-06:00
     - Performance improvement in ipv4_random() method
     - Accept arbitrary CIDRs in exclude list
     - CIDR and tag validation implemented for exclude list

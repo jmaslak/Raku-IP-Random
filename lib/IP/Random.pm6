@@ -1,7 +1,7 @@
 use v6.c;
 # unit class IP::Random:ver<0.0.2>;
 
-module IP::Random:ver<0.0.6>:auth<cpan:JMASLAK> {
+module IP::Random:ver<0.0.7>:auth<cpan:JMASLAK> {
 
     our constant named_exclude = {
         '0.0.0.0/8'             => ( 'default', 'rfc1122', ),
