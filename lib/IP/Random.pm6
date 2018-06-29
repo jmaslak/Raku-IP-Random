@@ -31,31 +31,54 @@ module IP::Random:ver<0.0.6>:auth<cpan:JMASLAK> {
     }
 
     our sub random_ipv4(:@exclude = ('default',), Int:D :$count = 0 ) {
+        # We build the "excluded" hash used later to determine what we
+        # want to exclude based on the  "exclude" named parameter.
+        #
+        # Keys are excluded CIDR, values are a list of IPv4 network base
+        # address and prefix length.  I.E.:
+        #   '0.0.0.0/0' => ( '0.0.0.0', 8 )
+        #
         my %excluded;
         for @exclude -> $ex {
-            for named_exclude -> $potential {
-                if $potential.value.grep($ex) {
-                    my ($exclude_ip, $exclude_mask) = $potential.key.split('/');
-                    $exclude_mask //= 32;
-
-                    my int $ipv4 = ipv4-to-int( $exclude_ip );
-                    my int $mask = Int($exclude_mask);
-                    %excluded{ $potential.key } = ( $ipv4, $mask );
+            if ($ex ~~ m/^ [ <[0..9]>**1..3 ]**4 % \.  ( \/ <[0..9]>**1..2 )?  $/) {
+                # CIDR or bare IP
+                my ($ipv4, $mask) = ipv4-cidr-to-int($ex);
+                %excluded{ "$ipv4/$mask" } = ( $ipv4, $mask );
+            } else {
+                # Named exclude
+                for named_exclude -> $potential {
+                    if $potential.value.grep($ex) {
+                        my ($ipv4, $mask) = ipv4-cidr-to-int($potential.key);
+                        %excluded{ "$ipv4/$mask" } = ( $ipv4, $mask );
+                    }
                 }
             }
         }
 
+        # If we have more than 128 IPs requested, split this into 16
+        # individual batches to run, executing each of them in a race,
+        # for better performance.  However if there are less than 128
+        # IPs there isn't much performance advantage.
+        #
+        # 128 was chosen somewhat arbitrarily, so don't look for deep
+        # meaning there.
+        #
         if ($count > 128) {
+            # The parallel path
             my $batch = Int($count/16);
             my $final = $count - 15*$batch;
             return flat (^16).race(batch=>1).map(
                 { _random_ipv4_batch(%excluded, $_ ?? $batch !! $final) }
             );
         } else {
+            # The sequential block
             return _random_ipv4_batch(%excluded, $count);
         }
     }
 
+    # This handles a batch of random IPs.
+    #
+    # See comments in random_ipv4() about the %excluded parameter.
     our sub _random_ipv4_batch(%excluded, Int:D $count) {
         my @out;
         my $c = $count;
@@ -86,6 +109,16 @@ module IP::Random:ver<0.0.6>:auth<cpan:JMASLAK> {
         return $ipval;
     }
 
+    my sub ipv4-cidr-to-int($ascii) {
+            my ($exclude_ip, $exclude_mask) = $ascii.split('/');
+            $exclude_mask //= 32;
+
+            my int $ipv4 = ipv4-to-int( $exclude_ip );
+            my int $mask = Int($exclude_mask);
+
+            return ($ipv4, $mask);
+    }
+
     my sub int-to-ipv4(Int:D $IP) {
         my int $ip = $IP;
 
@@ -111,6 +144,7 @@ IP::Random - Generate random IP Addresses
   use IP::Random;
 
   my $ipv4 = IP::Random::random_ipv4;
+  my @ips  = IP::Random::random_ipv4( count => 100 );
 
 =head1 DESCRIPTION
 
@@ -140,6 +174,7 @@ that match that type.  See L<named_exclude> for the valid types.
 
     say random_ipv4;
     say random_ipv4( exclude => ('rfc1112', 'rfc1122') );
+    say random_ipv4( exclude => ('default', '24.0.0.0/8') );
     say join( ',',
         random_ipv4( exclude => ('rfc1112', 'rfc1122'), count => 2048 ) );
 
@@ -148,7 +183,12 @@ exclude any addresses in the default exclude list.
 
 If called with the exclude optional parameter, which is passed as a list,
 it will use the exclude types (see L<named_exclude> for the types) to
-exclude from generation.
+exclude from generation.  In addition, individual CIDRs may also be passed
+to exclude those CIDRs.  If neither CIDRs or exclude types are passed, it
+will use the C<default> tag to exclude the default excludes. Should you
+want to exclude nothing, pass an empty list.  If you want to exclude
+something in addition to the default list, you must pass the C<default> tag
+explictly.
 
 The count optional parameter will cause c<random_ipv4> to return a list of
 random IPv4 addresses (equal to the value of C<count>).  If C<count> is

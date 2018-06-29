@@ -2,5 +2,7 @@ Todo Items:
 
   * Performance is poor
   * IPv6 support
-  * Ability to specify additional exclude ranges
+  * Throw error on invalid exclude tags
+  * Better IPv4 validation in random_ipv4
+  * Allow form of command that specifies "include" type
 
