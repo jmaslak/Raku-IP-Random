@@ -3,6 +3,7 @@ Revision history for IP-Random
 {{$NEXT}}
     - Performance improvement in ipv4_random() method
     - Accept arbitrary CIDRs in exclude list
+    - Throw exception if invalid exclude tags are passed to random_ipv4
 
 0.0.6  2018-06-22T22:57:48-06:00
     - Performance improvement in ipv4_random() method

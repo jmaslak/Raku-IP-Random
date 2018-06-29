@@ -46,11 +46,16 @@ module IP::Random:ver<0.0.6>:auth<cpan:JMASLAK> {
                 %excluded{ "$ipv4/$mask" } = ( $ipv4, $mask );
             } else {
                 # Named exclude
+                my Bool $found;
                 for named_exclude -> $potential {
                     if $potential.value.grep($ex) {
+                        $found = True;
                         my ($ipv4, $mask) = ipv4-cidr-to-int($potential.key);
                         %excluded{ "$ipv4/$mask" } = ( $ipv4, $mask );
                     }
+                }
+                if !$found {
+                    die "Could not find exclude type: $ex";
                 }
             }
         }
