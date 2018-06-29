@@ -3,6 +3,4 @@ Todo Items:
   * Performance is poor
   * IPv6 support
   * Allow form of command that specifies "include" type
-  * Better validation of CIDRs in exclude list (exclude param to
-    random_ipv4()
 

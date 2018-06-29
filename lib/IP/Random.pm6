@@ -42,6 +42,7 @@ module IP::Random:ver<0.0.6>:auth<cpan:JMASLAK> {
         for @exclude -> $ex {
             if ($ex ~~ m/^ [ <[0..9]>**1..3 ]**4 % \.  ( \/ <[0..9]>**1..2 )?  $/) {
                 # CIDR or bare IP
+
                 my ($ipv4, $mask) = ipv4-cidr-to-int($ex);
                 %excluded{ "$ipv4/$mask" } = ( $ipv4, $mask );
             } else {
@@ -108,6 +109,11 @@ module IP::Random:ver<0.0.6>:auth<cpan:JMASLAK> {
     my sub ipv4-to-int($ascii) {
         my int $ipval = 0;
         for $ascii.split('.') -> Int(Str) $part {
+
+            if ($part < 0) || ($part > 255) {
+                die "IP Address format is invalid";
+            }
+
             $ipval = $ipval +< 8 + $part;
         }
 
@@ -118,8 +124,16 @@ module IP::Random:ver<0.0.6>:auth<cpan:JMASLAK> {
             my ($exclude_ip, $exclude_mask) = $ascii.split('/');
             $exclude_mask //= 32;
 
+            if $exclude_mask > 32 {
+                die "Network prefix length is too long: $exclude_mask";
+            }
+
             my int $ipv4 = ipv4-to-int( $exclude_ip );
             my int $mask = Int($exclude_mask);
+
+            if ($ipv4 +< $exclude_mask) +& 0xffffffff {
+                die "Network base address doesn't make sense for netmask: $ascii";
+            }
 
             return ($ipv4, $mask);
     }
