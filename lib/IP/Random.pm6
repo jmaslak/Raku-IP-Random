@@ -38,32 +38,50 @@ module IP::Random:ver<0.0.7>:auth<cpan:JMASLAK> {
         # address and prefix length.  I.E.:
         #   '0.0.0.0/0' => ( '0.0.0.0', 8 )
         #
-        my %excluded;
-        for @exclude -> $ex {
-            if ($ex ~~ m/^ [ <[0..9]>**1..3 ]**4 % \.  ( \/ <[0..9]>**1..2 )?  $/) {
-                # CIDR or bare IP
+        # We also cache the common case.
+        
+        my @excluded_ranges;
+        my $include_size;
 
-                my ($ipv4, $mask) = ipv4-cidr-to-int($ex);
-                %excluded{ "$ipv4/$mask" } = ( $ipv4, $mask );
-            } else {
-                # Named exclude
-                my Bool $found;
-                for named_exclude -> $potential {
-                    if $potential.value.grep($ex) {
-                        $found = True;
-                        my ($ipv4, $mask) = ipv4-cidr-to-int($potential.key);
-                        %excluded{ "$ipv4/$mask" } = ( $ipv4, $mask );
+        state @saved_exclude;
+        state @saved_excluded_ranges;
+        state $saved_include_size;
+
+        if (@saved_exclude ~~ @exclude) {
+            @excluded_ranges = @saved_excluded_ranges;
+            $include_size    = $saved_include_size;
+        } else {
+            my %excluded;
+            for @exclude -> $ex {
+                if ($ex ~~ m/^ [ <[0..9]>**1..3 ]**4 % \.  ( \/ <[0..9]>**1..2 )?  $/) {
+                    # CIDR or bare IP
+
+                    my ($ipv4, $mask) = ipv4-cidr-to-int($ex);
+                    %excluded{ "$ipv4/$mask" } = ( $ipv4, $mask );
+                } else {
+                    # Named exclude
+                    my Bool $found;
+                    for named_exclude -> $potential {
+                        if $potential.value.grep($ex) {
+                            $found = True;
+                            my ($ipv4, $mask) = ipv4-cidr-to-int($potential.key);
+                            %excluded{ "$ipv4/$mask" } = ( $ipv4, $mask );
+                        }
+                    }
+                    if !$found {
+                        die "Could not find exclude type: $ex";
                     }
                 }
-                if !$found {
-                    die "Could not find exclude type: $ex";
-                }
             }
-        }
 
-        my @excluded_ranges = _ipv4_exclude_ranges(%excluded);
-        my $exclude_size    = _ipv4_coverage_count(@excluded_ranges);
-        my $include_size    = 2**32 - $exclude_size;
+            @excluded_ranges = _ipv4_exclude_ranges(%excluded);
+            my $exclude_size = _ipv4_coverage_count(@excluded_ranges);
+            $include_size    = 2**32 - $exclude_size;
+
+            @saved_exclude         = @exclude;
+            @saved_excluded_ranges = @excluded_ranges;
+            $saved_include_size    = $include_size;
+        }
 
         # If we have more than 128 IPs requested, split this into 16
         # individual batches to run, executing each of them in a race,
@@ -125,7 +143,7 @@ module IP::Random:ver<0.0.7>:auth<cpan:JMASLAK> {
     # Compute coverage, takes range object (array of array refs, each
     # array ref contains start and end IP
     our sub _ipv4_coverage_count(@ranges) {
-        my $sum;
+        my Int $sum;
         for @ranges -> $range {
             $sum += 1 + $range[1] - $range[0];
         }
