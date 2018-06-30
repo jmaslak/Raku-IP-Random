@@ -1,6 +1,8 @@
 Revision history for IP-Random
 
 {{$NEXT}}
+    - Do not roll a 2**32 die when some of the address space is
+      excluded
 
 0.0.7  2018-06-28T21:32:00-06:00
     - Performance improvement in ipv4_random() method

@@ -61,6 +61,10 @@ module IP::Random:ver<0.0.7>:auth<cpan:JMASLAK> {
             }
         }
 
+        my @excluded_ranges = _ipv4_exclude_ranges(%excluded);
+        my $exclude_size    = _ipv4_coverage_count(@excluded_ranges);
+        my $include_size    = 2**32 - $exclude_size;
+
         # If we have more than 128 IPs requested, split this into 16
         # individual batches to run, executing each of them in a race,
         # for better performance.  However if there are less than 128
@@ -74,34 +78,93 @@ module IP::Random:ver<0.0.7>:auth<cpan:JMASLAK> {
             my $batch = Int($count/16);
             my $final = $count - 15*$batch;
             return flat (^16).race(batch=>1).map(
-                { _random_ipv4_batch(%excluded, $_ ?? $batch !! $final) }
+                { _random_ipv4_batch(@excluded_ranges, $include_size, $_ ?? $batch !! $final) }
             );
         } else {
             # The sequential block
-            return _random_ipv4_batch(%excluded, $count);
+            return _random_ipv4_batch(@excluded_ranges, $include_size, $count);
         }
+    }
+
+    # Builds a list of IP addresses to exclude, consolidating CIDRs into
+    # ranges as appropriate.
+    our sub _ipv4_exclude_ranges(%excluded) {
+        my @ranges =
+            map { ($^a[0], $^a[0] - 1 + 2**(32 - $^a[1])) },
+            unique
+            sort { $^a[0] <=> $^b[0] },
+            values %excluded;
+
+        my @last;
+        my @output;
+        while (@ranges) {
+            my @current = (shift @ranges).flat;
+
+            if (@last) {
+                # Overlap/extension
+                if (@last[1] >= (@current[0]-1)) {
+                    # @last[1] = max(@last[1], @current[1]);
+                    @last[1] = @last[1] > @current[1] ?? @last[1] !! @current[1];
+                } else {
+                    push @output, (@last[0], @last[1]);
+                    @last = @current;
+                }
+            } else {
+                # No overlap possibility, no "last"
+                @last = @current;
+            }
+        }
+
+        if (@last) {
+            push @output, (@last[0], @last[1]);
+        }
+
+        return @output;
+    }
+
+    # Compute coverage, takes range object (array of array refs, each
+    # array ref contains start and end IP
+    our sub _ipv4_coverage_count(@ranges) {
+        my $sum;
+        for @ranges -> $range {
+            $sum += 1 + $range[1] - $range[0];
+        }
+
+        return $sum;
     }
 
     # This handles a batch of random IPs.
     #
     # See comments in random_ipv4() about the %excluded parameter.
-    our sub _random_ipv4_batch(%excluded, Int:D $count) {
+    our sub _random_ipv4_batch(@excluded_ranges, $include_size, Int:D $count) {
         my @out;
         my $c = $count;
-        loop {
-            my int $IP = (^(2**32)).pick;
 
-            if (! grep { $IP +& ( ((2**32)-1) +^ ( (2**(32-$_[1]))-1 ) ) == $_[0] }, %excluded.values ) {
-                my $addr = int-to-ipv4($IP);
-                if (!$count) {
-                    return $addr;
-                } else {
-                    @out.push($addr);
-                    $c--;
-                    if (!$c) {
-                        return @out;
-                    }
+_RIBLOOP:
+        loop {
+            my int $IP = (^$include_size).pick;
+
+            my $offset = 0;
+            for @excluded_ranges -> $exc {
+                if $IP >= $exc[0] {
+                    # We need to skip this range
+                    $IP += 1 + $exc[1] - $exc[0];
+                } elsif $IP <  $exc[0] {
+                    last;
                 }
+            }
+
+            my $addr = int-to-ipv4($IP);
+            if (!$count) {
+                return $addr;
+            } else {
+                @out.push($addr);
+                $c--;
+                if (!$c) {
+                    return @out;
+                }
+
+                next _RIBLOOP;
             }
         }
     }
