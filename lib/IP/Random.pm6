@@ -38,7 +38,8 @@ module IP::Random:ver<0.0.7>:auth<cpan:JMASLAK> {
         # address and prefix length.  I.E.:
         #   '0.0.0.0/0' => ( '0.0.0.0', 8 )
         #
-        # We also cache the common case.
+        # We also cache the common case - the repetitive calls to
+        # random_ipv4() with the same exclude arguments.
         
         my @excluded_ranges;
         my $include_size;
