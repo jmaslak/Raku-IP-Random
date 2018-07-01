@@ -11,6 +11,7 @@ SYNOPSIS
     use IP::Random;
 
     my $ipv4 = IP::Random::random_ipv4;
+    my @ips  = IP::Random::random_ipv4( count => 100 );
 
 DESCRIPTION
 ===========
@@ -39,12 +40,13 @@ random_ipv4( :@exclude, :$count )
 
     say random_ipv4;
     say random_ipv4( exclude => ('rfc1112', 'rfc1122') );
+    say random_ipv4( exclude => ('default', '24.0.0.0/8') );
     say join( ',',
         random_ipv4( exclude => ('rfc1112', 'rfc1122'), count => 2048 ) );
 
 This returns a random IPv4 address. If called with no parameters, it will exclude any addresses in the default exclude list.
 
-If called with the exclude optional parameter, which is passed as a list, it will use the exclude types (see [named_exclude](named_exclude) for the types) to exclude from generation.
+If called with the exclude optional parameter, which is passed as a list, it will use the exclude types (see [named_exclude](named_exclude) for the types) to exclude from generation. In addition, individual CIDRs may also be passed to exclude those CIDRs. If neither CIDRs or exclude types are passed, it will use the `default` tag to exclude the default excludes. Should you want to exclude nothing, pass an empty list. If you want to exclude something in addition to the default list, you must pass the `default` tag explictly.
 
 The count optional parameter will cause c<random_ipv4> to return a list of random IPv4 addresses (equal to the value of `count`). If `count` is greater than 128, this will be done across multiple CPU cores. Batching in this way will yield significantly higher performance than repeated calls to the `random_ipv4()` routine.
 
