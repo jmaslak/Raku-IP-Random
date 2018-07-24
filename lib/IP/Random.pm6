@@ -155,13 +155,13 @@ module IP::Random:ver<0.0.8>:auth<cpan:JMASLAK> {
     # This handles a batch of random IPs.
     #
     # See comments in random_ipv4() about the %excluded parameter.
-    our sub _random_ipv4_batch(@excluded_ranges, $include_size, Int:D $count) {
+    our sub _random_ipv4_batch(@excluded_ranges, $include_size, Int:D $count where * >= 0) {
         my @out;
-        my $c = $count;
 
-_RIBLOOP:
-        loop {
-            my int $IP = (^$include_size).pick;
+        my $rolls = $count ?? $count !! 1;
+        my int @IP = (^$include_size).roll($rolls);
+
+        for @IP -> $IP is copy {
 
             my $offset = 0;
             for @excluded_ranges -> $exc {
@@ -178,14 +178,10 @@ _RIBLOOP:
                 return $addr;
             } else {
                 @out.push($addr);
-                $c--;
-                if (!$c) {
-                    return @out;
-                }
-
-                next _RIBLOOP;
             }
         }
+
+        return @out;
     }
 
     my sub ipv4-to-int($ascii) {
