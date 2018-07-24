@@ -1,8 +1,7 @@
 Revision history for IP-Random
 
 {{$NEXT}}
-    - Minor speed improvement (all random IPs are picked at once rather
-      than calling pick()/roll())
+    - Allow option to prevent duplicate IPs from appearing
 
 0.0.8  2018-06-30T19:33:02-06:00
     - Do not roll a 2**32 die when some of the address space is

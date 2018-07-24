@@ -30,7 +30,7 @@ module IP::Random:ver<0.0.8>:auth<cpan:JMASLAK> {
         map { $_.key }, grep { $_.value.grep($type) }, named_exclude;
     }
 
-    our sub random_ipv4(:@exclude = ('default',), Int:D :$count = 0 ) {
+    our sub random_ipv4(:@exclude = ('default',), Int:D :$count = 0, Bool:D :$allow-dupes = True ) {
         # We build the "excluded" hash used later to determine what we
         # want to exclude based on the  "exclude" named parameter.
         #
@@ -54,7 +54,7 @@ module IP::Random:ver<0.0.8>:auth<cpan:JMASLAK> {
         } else {
             my %excluded;
             for @exclude -> $ex {
-                if ($ex ~~ m/^ [ <[0..9]>**1..3 ]**4 % \.  ( \/ <[0..9]>**1..2 )?  $/) {
+                if ($ex ~~ m/^ (^256) **4 % \.  ( \/ <[0..9]>**1..2 )?  $/) {
                     # CIDR or bare IP
 
                     my ($ipv4, $mask) = ipv4-cidr-to-int($ex);
@@ -84,6 +84,15 @@ module IP::Random:ver<0.0.8>:auth<cpan:JMASLAK> {
             $saved_include_size    = $include_size;
         }
 
+        my int @IP;
+        my $rolls = $count ?? $count !! 1;
+        # Do we allow duplicates?
+        if ($allow-dupes) {
+            @IP = (^$include_size).roll($rolls);
+        } else {
+            @IP = (^$include_size).pick($rolls);
+        }
+
         # If we have more than 128 IPs requested, split this into 16
         # individual batches to run, executing each of them in a race,
         # for better performance.  However if there are less than 128
@@ -94,14 +103,14 @@ module IP::Random:ver<0.0.8>:auth<cpan:JMASLAK> {
         #
         if ($count > 128) {
             # The parallel path
-            my $batch = Int($count/16);
-            my $final = $count - 15*$batch;
+            my @batches = @IP.batch( (@IP.elems+15) div 16 ).list;
+
             return flat (^16).race(batch=>1).map(
-                { _random_ipv4_batch(@excluded_ranges, $include_size, $_ ?? $batch !! $final) }
+                { _random_ipv4_batch(@excluded_ranges, @batches[$_], True) }
             );
         } else {
             # The sequential block
-            return _random_ipv4_batch(@excluded_ranges, $include_size, $count);
+            return _random_ipv4_batch(@excluded_ranges, @IP, $count > 0)
         }
     }
 
@@ -155,11 +164,12 @@ module IP::Random:ver<0.0.8>:auth<cpan:JMASLAK> {
     # This handles a batch of random IPs.
     #
     # See comments in random_ipv4() about the %excluded parameter.
-    our sub _random_ipv4_batch(@excluded_ranges, $include_size, Int:D $count where * >= 0) {
+    our sub _random_ipv4_batch(
+        @excluded_ranges,
+        @IP,
+        Bool:D $return-array
+    ) {
         my @out;
-
-        my $rolls = $count ?? $count !! 1;
-        my int @IP = (^$include_size).roll($rolls);
 
         for @IP -> $IP is copy {
 
@@ -174,7 +184,7 @@ module IP::Random:ver<0.0.8>:auth<cpan:JMASLAK> {
             }
 
             my $addr = int-to-ipv4($IP);
-            if (!$count) {
+            if (!$return-array) {
                 return $addr;
             } else {
                 @out.push($addr);
@@ -241,7 +251,7 @@ IP::Random - Generate random IP Addresses
   use IP::Random;
 
   my $ipv4 = IP::Random::random_ipv4;
-  my @ips  = IP::Random::random_ipv4( count => 100 );
+  my @ips  = IP::Random::random_ipv4( count => 100, allow-dupes => False );
 
 =head1 DESCRIPTION
 
@@ -274,6 +284,8 @@ that match that type.  See L<named_exclude> for the valid types.
     say random_ipv4( exclude => ('default', '24.0.0.0/8') );
     say join( ',',
         random_ipv4( exclude => ('rfc1112', 'rfc1122'), count => 2048 ) );
+    say join( ',',
+        random_ipv4( count => 2048, allow-dupes => False ) );
 
 This returns a random IPv4 address.  If called with no parameters, it will
 exclude any addresses in the default exclude list.
@@ -292,6 +304,16 @@ random IPv4 addresses (equal to the value of C<count>).  If C<count> is
 greater than 128, this will be done across multiple CPU cores.  Batching in
 this way will yield significantly higher performance than repeated calls to
 the C<random_ipv4()> routine.
+
+The C<allow-dupes> parameter determines whether duplicate IP addresses are
+allowed to be returned within a batch.  The default, C<False>, allows
+duplicate addresses to be randomly picked.  Obviously unless there is an
+extensive exclude list or a very large batch size, the chance of randomly
+selecting a duplicate is very small.  But with extensive excludes and large
+batch sizes, it is possible to have duplicates selected.  If the amount
+of non-excluded IPv4 space is less than the batch size (the C<count>
+argument), then you will get a list of all possible IP addresses rather
+than C<count> elements returned.
 
 =head1 CONSTANTS
 
