@@ -54,7 +54,9 @@ module IP::Random:ver<0.0.8>:auth<cpan:JMASLAK> {
         } else {
             my %excluded;
             for @exclude -> $ex {
-                if ($ex ~~ m/^ (^256) **4 % \.  ( \/ <[0..9]>**1..2 )?  $/) {
+                my @oct = ^256;
+                my @len = ^32;
+                if ($ex ~~ m/^ @oct **4 % \.  ( \/ @len )?  $/) {
                     # CIDR or bare IP
 
                     my ($ipv4, $mask) = ipv4-cidr-to-int($ex);
