@@ -52,7 +52,7 @@ If called with the exclude optional parameter, which is passed as a list, it wil
 
 The count optional parameter will cause c<random_ipv4> to return a list of random IPv4 addresses (equal to the value of `count`). If `count` is greater than 128, this will be done across multiple CPU cores. Batching in this way will yield significantly higher performance than repeated calls to the `random_ipv4()` routine.
 
-The `allow-dupes` parameter determines whether duplicate IP addresses are allowed to be returned within a batch. The default, `False`, allows duplicate addresses to be randomly picked. Obviously unless there is an extensive exclude list or a very large batch size, the chance of randomly selecting a duplicate is very small. But with extensive excludes and large batch sizes, it is possible to have duplicates selected. If the amount of non-excluded IPv4 space is less than the batch size (the `count` argument), then you will get a list of all possible IP addresses rather than `count` elements returned.
+The `allow-dupes` parameter determines whether duplicate IP addresses are allowed to be returned within a batch. The default, `True`, allows duplicate addresses to be randomly picked. Obviously unless there is an extensive exclude list or a very large batch size, the chance of randomly selecting a duplicate is very small. But with extensive excludes and large batch sizes, it is possible to have duplicates selected. If the amount of non-excluded IPv4 space is less than the batch size (the `count` argument) and this parameter is set to `False`, then you will get a list of all possible IP addresses rather than `count` elements returned.
 
 CONSTANTS
 =========
