@@ -308,14 +308,14 @@ this way will yield significantly higher performance than repeated calls to
 the C<random_ipv4()> routine.
 
 The C<allow-dupes> parameter determines whether duplicate IP addresses are
-allowed to be returned within a batch.  The default, C<False>, allows
+allowed to be returned within a batch.  The default, C<True>, allows
 duplicate addresses to be randomly picked.  Obviously unless there is an
 extensive exclude list or a very large batch size, the chance of randomly
 selecting a duplicate is very small.  But with extensive excludes and large
 batch sizes, it is possible to have duplicates selected.  If the amount
 of non-excluded IPv4 space is less than the batch size (the C<count>
-argument), then you will get a list of all possible IP addresses rather
-than C<count> elements returned.
+argument) and this parameter is set to C<False>, then you will get a list
+of all possible IP addresses rather than C<count> elements returned.
 
 =head1 CONSTANTS
 
