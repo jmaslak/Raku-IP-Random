@@ -79,7 +79,7 @@ module IP::Random:ver<0.0.10>:auth<cpan:JMASLAK> {
 
             @excluded_ranges = _ipv4_exclude_ranges(%excluded);
             my $exclude_size = _ipv4_coverage_count(@excluded_ranges);
-            $include_size    = 2**32 - $exclude_size;
+            $include_size    = 2³² - $exclude_size;
 
             @saved_exclude         = @exclude;
             @saved_excluded_ranges = @excluded_ranges;
