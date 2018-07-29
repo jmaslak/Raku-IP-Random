@@ -22,11 +22,11 @@ module IP::Random:ver<0.0.10>:auth<cpan:JMASLAK> {
         '255.255.255.255/32'    => ( 'default', 'rfc919',  ),
     };
 
-    our sub default_ipv4_exclude() {
+    our sub default_ipv4_exclude() is pure {
         keys named_exclude;
     }
 
-    our sub exclude_ipv4_list($type) {
+    our sub exclude_ipv4_list($type) is pure {
         map { $_.key }, grep { $_.value.grep($type) }, named_exclude;
     }
 
@@ -118,7 +118,7 @@ module IP::Random:ver<0.0.10>:auth<cpan:JMASLAK> {
 
     # Builds a list of IP addresses to exclude, consolidating CIDRs into
     # ranges as appropriate.
-    our sub _ipv4_exclude_ranges(%excluded) {
+    our sub _ipv4_exclude_ranges(%excluded) is pure {
         my @ranges =
             map { ($^a[0], $^a[0] - 1 + 2**(32 - $^a[1])) },
             unique
@@ -154,7 +154,7 @@ module IP::Random:ver<0.0.10>:auth<cpan:JMASLAK> {
 
     # Compute coverage, takes range object (array of array refs, each
     # array ref contains start and end IP
-    our sub _ipv4_coverage_count(@ranges) {
+    our sub _ipv4_coverage_count(@ranges) is pure {
         my Int $sum;
         for @ranges -> $range {
             $sum += 1 + $range[1] - $range[0];
@@ -196,7 +196,7 @@ module IP::Random:ver<0.0.10>:auth<cpan:JMASLAK> {
         return @out;
     }
 
-    my sub ipv4-to-int($ascii) {
+    my sub ipv4-to-int($ascii) is pure {
         my int $ipval = 0;
         for $ascii.split('.') -> Int(Str) $part {
 
@@ -210,7 +210,7 @@ module IP::Random:ver<0.0.10>:auth<cpan:JMASLAK> {
         return $ipval;
     }
 
-    my sub ipv4-cidr-to-int($ascii) {
+    my sub ipv4-cidr-to-int($ascii) is pure {
             my ($exclude_ip, $exclude_mask) = $ascii.split('/');
             $exclude_mask //= 32;
 
@@ -228,7 +228,7 @@ module IP::Random:ver<0.0.10>:auth<cpan:JMASLAK> {
             return ($ipv4, $mask);
     }
 
-    my sub int-to-ipv4(Int:D $IP) {
+    my sub int-to-ipv4(Int:D $IP) is pure {
         my int $ip = $IP;
 
         my @output;
