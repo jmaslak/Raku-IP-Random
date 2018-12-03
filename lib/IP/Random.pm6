@@ -440,8 +440,8 @@ Center of Colorado (See L<http://giccolorado.org/>.  This organization
 understands TIMTOWTDI in life and, in line with that understanding, provides
 life-saving support to the transgender community.
 
-If you make any size donation, I'll add your list to "MODULE PATRONS" in this
-documentation!
+If you make any size donation to the Gender Identity Center, I'll add your name
+to "MODULE PATRONS" in this documentation!
 
 =head1 COPYRIGHT AND LICENSE
 
