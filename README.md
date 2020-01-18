@@ -151,7 +151,9 @@ EXPRESSING APPRECIATION
 
 If this module makes your life easier, or helps make you (or your workplace) a ton of money, I always enjoy hearing about it! My response when I hear that someone uses my module is to go back to that module and spend a little time on it if I think there's something to improve - it's motivating when you hear someone appreciates your work!
 
-I don't seek any money for this - I do this work because I enjoy it. That said, should you want to show appreciation financially, few things would make me smile more than knowing that you sent a donation to the Gender Identity Center of Colorado (See [http://giccolorado.org/](http://giccolorado.org/) and donation page at [https://tinyurl.com/giccodonation](https://tinyurl.com/giccodonation)). This organization understands TIMTOWTDI in life and, in line with that understanding, provides life-saving support to the transgender community.
+I don't seek any money for this - I do this work because I enjoy it. That said, should you want to show appreciation financially, few things would make me smile more than knowing that you sent a donation to the Gender Identity Center of Colorado (See [http://giccolorado.org/](http://giccolorado.org/). This organization understands TIMTOWTDI in life and, in line with that understanding, provides life-saving support to the transgender community.
+
+If you make any size donation to the Gender Identity Center, I'll add your name to "MODULE PATRONS" in this documentation!
 
 COPYRIGHT AND LICENSE
 =====================
