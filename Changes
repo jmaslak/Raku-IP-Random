@@ -1,6 +1,7 @@
 Revision history for IP-Random
 
 {{$NEXT}}
+    - Rename Git Hub repo from Perl6 to Raku
 
 0.0.10  2018-07-27T22:10:35-06:00
     - Fix misleading documentation on "allow-dupes" optional parameter
