@@ -1,6 +1,7 @@
 Revision history for IP-Random
 
 {{$NEXT}}
+    - Move to Raku module ecosystem
 
 0.0.11  2020-01-18T23:54:03Z
     - Rename Git Hub repo from Perl6 to Raku

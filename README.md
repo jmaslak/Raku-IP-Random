@@ -158,7 +158,7 @@ If you make any size donation to the Gender Identity Center, I'll add your name 
 COPYRIGHT AND LICENSE
 =====================
 
-Copyright (C) 2018 Joelle Maslak
+Copyright (C) 2018-2022 Joelle Maslak
 
 This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
 

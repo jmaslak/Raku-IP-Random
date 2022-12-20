@@ -1,7 +1,7 @@
 use v6.c;
 # unit class IP::Random:ver<0.0.2>;
 
-module IP::Random:ver<0.0.11>:auth<cpan:JMASLAK> {
+module IP::Random:ver<0.0.11>:auth<zef:jmaslak> {
 
     our constant named_exclude = {
         '0.0.0.0/8'             => ( 'default', 'rfc1122', ),
@@ -445,7 +445,7 @@ to "MODULE PATRONS" in this documentation!
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2018 Joelle Maslak
+Copyright (C) 2018-2022 Joelle Maslak
 
 This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
 
